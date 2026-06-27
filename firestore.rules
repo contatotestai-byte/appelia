@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(ownerId) {
+      return isSignedIn() && request.auth.uid == ownerId;
+    }
+    // Em create/update o ownerId enviado deve ser o próprio usuário.
+    function ownsIncoming() {
+      return isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+    }
+
+    // Perfil do usuário: documento com id == uid.
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Coleções de negócio: restritas ao ownerId do documento.
+    match /{collection}/{docId} {
+      allow read, delete: if isSignedIn() && isOwner(resource.data.ownerId);
+      allow create: if ownsIncoming();
+      allow update: if isSignedIn()
+                    && isOwner(resource.data.ownerId)
+                    && request.resource.data.ownerId == resource.data.ownerId;
+    }
+  }
+}

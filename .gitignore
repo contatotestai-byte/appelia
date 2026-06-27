@@ -1,0 +1,32 @@
+# dependencies
+node_modules
+functions/node_modules
+
+# build
+dist
+functions/lib
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+serviceAccount.json
+functions/.env
+functions/serviceAccount.json
+.runtimeconfig.json
+
+# firebase
+.firebase
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# vercel
+.vercel
+
+# misc
+.DS_Store
+*.log
+.vite
+*.tsbuildinfo
+dist-node-types
