@@ -1,75 +1,51 @@
-// Gera ícones PNG do PWA (sem dependências externas).
-// Fundo navy (#0f172a) com monograma "E" branco.
-import { deflateSync } from 'node:zlib'
-import { writeFileSync, mkdirSync } from 'node:fs'
+// Gera os ícones do PWA a partir do wordmark oficial da ELIÁ (branco) sobre fundo navy.
+import sharp from 'sharp'
+import { mkdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
 const __dir = dirname(fileURLToPath(import.meta.url))
-const outDir = join(__dir, '..', 'public', 'icons')
+const root = join(__dir, '..')
+const outDir = join(root, 'public', 'icons')
 mkdirSync(outDir, { recursive: true })
 
-const NAVY = [15, 23, 42]
-const WHITE = [248, 250, 252]
+const NAVY = { r: 15, g: 23, b: 42, alpha: 1 }
+const wordmark = join(root, 'public', 'brand', 'wordmark_white.png')
 
-function crc32(buf) {
-  let c = ~0
-  for (let i = 0; i < buf.length; i++) {
-    c ^= buf[i]
-    for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1))
-  }
-  return ~c >>> 0
-}
-function chunk(type, data) {
-  const len = Buffer.alloc(4)
-  len.writeUInt32BE(data.length, 0)
-  const typeBuf = Buffer.from(type, 'ascii')
-  const crc = Buffer.alloc(4)
-  crc.writeUInt32BE(crc32(Buffer.concat([typeBuf, data])), 0)
-  return Buffer.concat([len, typeBuf, data, crc])
-}
+async function makeIcon(size, { padding = 0.18, maskable = false } = {}) {
+  // área útil do wordmark dentro do quadrado
+  const pad = maskable ? 0.26 : padding
+  const innerW = Math.round(size * (1 - pad * 2))
 
-function makePNG(size) {
-  const px = (x, y) => {
-    // monograma "E": três barras horizontais + uma vertical, centralizado
-    const m = size * 0.26 // margem
-    const w = size - m * 2
-    const th = w * 0.17 // espessura
-    const left = m
-    const right = m + w
-    const top = m
-    const bottom = m + w
-    const inE =
-      (x >= left && x <= left + th && y >= top && y <= bottom) || // vertical
-      (y >= top && y <= top + th && x >= left && x <= right) || // topo
-      (y >= (top + bottom) / 2 - th / 2 && y <= (top + bottom) / 2 + th / 2 && x >= left && x <= right * 0.92) || // meio
-      (y >= bottom - th && y <= bottom && x >= left && x <= right) // base
-    return inE ? WHITE : NAVY
-  }
+  const mark = await sharp(wordmark)
+    .resize({ width: innerW, fit: 'inside' })
+    .toBuffer()
+  const meta = await sharp(mark).metadata()
 
-  const raw = Buffer.alloc((size * 4 + 1) * size)
-  let o = 0
-  for (let y = 0; y < size; y++) {
-    raw[o++] = 0 // filtro none
-    for (let x = 0; x < size; x++) {
-      const [r, g, b] = px(x, y)
-      raw[o++] = r
-      raw[o++] = g
-      raw[o++] = b
-      raw[o++] = 255
-    }
-  }
-  const sig = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])
-  const ihdr = Buffer.alloc(13)
-  ihdr.writeUInt32BE(size, 0)
-  ihdr.writeUInt32BE(size, 4)
-  ihdr[8] = 8 // bit depth
-  ihdr[9] = 6 // RGBA
-  const idat = deflateSync(raw)
-  return Buffer.concat([sig, chunk('IHDR', ihdr), chunk('IDAT', idat), chunk('IEND', Buffer.alloc(0))])
+  const left = Math.round((size - (meta.width ?? innerW)) / 2)
+  const top = Math.round((size - (meta.height ?? 0)) / 2)
+
+  return sharp({
+    create: { width: size, height: size, channels: 4, background: NAVY },
+  })
+    .composite([{ input: mark, left, top }])
+    .png()
+    .toBuffer()
 }
 
-for (const size of [192, 512]) {
-  writeFileSync(join(outDir, `icon-${size}.png`), makePNG(size))
-  console.log(`icon-${size}.png gerado`)
+const targets = [
+  { name: 'icon-192.png', size: 192 },
+  { name: 'icon-512.png', size: 512 },
+  { name: 'icon-maskable-512.png', size: 512, maskable: true },
+  { name: 'apple-touch-icon.png', size: 180 },
+]
+
+for (const t of targets) {
+  const buf = await makeIcon(t.size, { maskable: t.maskable })
+  await sharp(buf).toFile(join(outDir, t.name))
+  console.log(`${t.name} gerado (${t.size}px)`) // eslint-disable-line no-console
 }
+
+// favicon 64px (navy quadrado arredondado é tratado no SVG; aqui geramos PNG simples)
+await sharp(await makeIcon(64, { padding: 0.14 })).toFile(join(outDir, 'favicon-64.png'))
+console.log('favicon-64.png gerado')

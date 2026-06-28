@@ -101,8 +101,12 @@ export default function Login() {
       >
         <div />
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <div style={{ fontSize: 38, fontWeight: 800, color: '#fff', letterSpacing: 2 }}>ELIÁ</div>
-          <div style={{ fontSize: 11, letterSpacing: 4, color: '#94a3b8', fontWeight: 500, marginTop: 6 }}>
+          <img
+            src="/brand/wordmark_white.png"
+            alt="ELIÁ"
+            style={{ width: 188, height: 'auto', marginBottom: 14 }}
+          />
+          <div style={{ fontSize: 11, letterSpacing: 4, color: '#94a3b8', fontWeight: 500 }}>
             CONSULTORIA DE PESSOAS
           </div>
         </div>
