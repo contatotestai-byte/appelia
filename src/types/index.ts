@@ -37,6 +37,7 @@ export interface Cliente extends BaseDoc {
   contato: string
   tipo: ClienteTipo
   valorContrato: number
+  horasContratadas?: number
   dataInicio: Timestamp | null
   dataFim: Timestamp | null
   status: ClienteStatus
@@ -111,6 +112,7 @@ export interface Appointment extends BaseDoc {
   clientId: string | null
   titulo: string
   data: Timestamp | null
+  contato?: string
   statusConfirmacao: ConfirmacaoStatus
   googleEventId: string | null
 }
