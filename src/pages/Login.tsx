@@ -67,11 +67,11 @@ export default function Login() {
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    height: 50,
-    borderRadius: 14,
-    border: '1px solid #334155',
-    background: '#1e293b',
-    color: '#f8fafc',
+    height: 52,
+    borderRadius: 13,
+    border: '1px solid #344054',
+    background: 'rgba(255,255,255,.04)',
+    color: '#f9fafb',
     padding: '0 16px',
     fontSize: 15,
     outline: 'none',
@@ -90,13 +90,13 @@ export default function Login() {
       <div
         style={{
           width: '100%',
-          maxWidth: 430,
+          maxWidth: 420,
           minHeight: '100dvh',
-          background: 'linear-gradient(165deg,#1e293b 0%,#0f172a 70%)',
+          background: 'radial-gradient(120% 80% at 50% 0%,#1d2939 0%,#101828 60%)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '64px 32px 44px',
+          padding: '72px 32px 46px',
         }}
       >
         <div />
@@ -148,11 +148,11 @@ export default function Login() {
             style={{
               height: 52,
               border: 'none',
-              borderRadius: 14,
-              background: theme.color.financeiro,
+              borderRadius: 13,
+              background: theme.color.primary,
               color: '#fff',
-              fontSize: 16,
-              fontWeight: 700,
+              fontSize: 15,
+              fontWeight: 600,
               cursor: busy ? 'wait' : 'pointer',
               marginTop: 6,
             }}
@@ -166,10 +166,10 @@ export default function Login() {
             Esqueci minha senha
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '8px 0' }}>
-            <div style={{ flex: 1, height: 1, background: '#334155' }} />
-            <div style={{ fontSize: 11, color: '#64748b' }}>ou</div>
-            <div style={{ flex: 1, height: 1, background: '#334155' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '7px 0' }}>
+            <div style={{ flex: 1, height: 1, background: '#344054' }} />
+            <div style={{ fontSize: 11, color: '#667085' }}>ou</div>
+            <div style={{ flex: 1, height: 1, background: '#344054' }} />
           </div>
 
           <button
@@ -178,12 +178,12 @@ export default function Login() {
             disabled={busy}
             style={{
               height: 50,
-              border: '1px solid #334155',
-              borderRadius: 14,
+              border: '1px solid #344054',
+              borderRadius: 13,
               background: 'transparent',
-              color: '#e2e8f0',
+              color: '#e4e7ec',
               fontSize: 14,
-              fontWeight: 600,
+              fontWeight: 500,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -191,7 +191,13 @@ export default function Login() {
               gap: 10,
             }}
           >
-            <span style={{ fontWeight: 800, color: '#fff' }}>G</span> Entrar com Google
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M21.6 12.2c0-.6-.05-1.2-.15-1.7H12v3.4h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.2z" fill="#4285F4" />
+              <path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853" />
+              <path d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z" fill="#FBBC05" />
+              <path d="M12 6.1c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.8 9.4 6.1 12 6.1z" fill="#EA4335" />
+            </svg>
+            Entrar com Google
           </button>
         </form>
       </div>

@@ -1,12 +1,13 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { theme } from '@/theme'
+import { Icon, type IconName } from '@/components/Icon'
 
-const tabs = [
-  { to: '/', icon: '🏠', label: 'Início', match: (p: string) => p === '/' },
-  { to: '/financeiro', icon: '💰', label: 'Financeiro', match: (p: string) => p.startsWith('/financeiro') },
-  { to: '/admin', icon: '📋', label: 'Admin', match: (p: string) => p.startsWith('/admin') },
-  { to: '/marketing', icon: '📣', label: 'Marketing', match: (p: string) => p.startsWith('/marketing') },
-  { to: '/assistente', icon: '🤖', label: 'Assistente', match: (p: string) => p.startsWith('/assistente') },
+const tabs: { to: string; icon: IconName; label: string; match: (p: string) => boolean }[] = [
+  { to: '/', icon: 'home', label: 'Início', match: (p) => p === '/' },
+  { to: '/financeiro', icon: 'wallet', label: 'Financeiro', match: (p) => p.startsWith('/financeiro') },
+  { to: '/admin', icon: 'clipboard', label: 'Admin', match: (p) => p.startsWith('/admin') },
+  { to: '/marketing', icon: 'megaphone', label: 'Marketing', match: (p) => p.startsWith('/marketing') },
+  { to: '/assistente', icon: 'sparkle', label: 'Assistente', match: (p) => p.startsWith('/assistente') },
 ]
 
 export default function Layout() {
@@ -21,55 +22,55 @@ export default function Layout() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#cbd5e1',
+        background: theme.color.outer,
       }}
     >
       <div
         style={{
           width: '100%',
-          maxWidth: 430,
+          maxWidth: 420,
           height: '100dvh',
-          maxHeight: 920,
+          maxHeight: 900,
           background: theme.color.bg,
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 30px 70px -20px rgba(15,23,42,.4)',
+          boxShadow: '0 30px 70px -20px rgba(16,24,40,.45)',
         }}
       >
         {/* área de scroll */}
         <div
           className="scroll"
-          style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '14px 0 96px' }}
+          style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '14px 0 100px' }}
         >
           <Outlet />
         </div>
 
         {/* botão flutuante IA */}
         {!hideChatFab && (
-          <div
+          <button
             onClick={() => nav('/assistente')}
             style={{
               position: 'absolute',
               right: 18,
-              bottom: 92,
+              bottom: 94,
               width: 54,
               height: 54,
-              borderRadius: 18,
-              background: `linear-gradient(150deg, ${theme.color.navy2}, ${theme.color.navy})`,
+              borderRadius: 17,
+              border: 'none',
+              background: `linear-gradient(145deg, ${theme.color.primary}, ${theme.color.primaryDark})`,
               color: '#fff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 24,
-              boxShadow: '0 12px 24px -8px rgba(15,23,42,.6)',
+              boxShadow: theme.shadow.indigo,
               cursor: 'pointer',
               zIndex: 40,
             }}
           >
-            🤖
-          </div>
+            <Icon name="sparkle" size={24} strokeWidth={1.8} />
+          </button>
         )}
 
         {/* bottom nav */}
@@ -79,13 +80,13 @@ export default function Layout() {
             bottom: 0,
             left: 0,
             right: 0,
-            height: 78,
-            background: 'rgba(255,255,255,.92)',
-            backdropFilter: 'blur(12px)',
+            height: 80,
+            background: 'rgba(255,255,255,.94)',
+            backdropFilter: 'blur(14px)',
             borderTop: `1px solid ${theme.color.border}`,
             display: 'flex',
             alignItems: 'flex-start',
-            padding: '10px 8px 0',
+            padding: '11px 6px 0',
             zIndex: 35,
           }}
         >
@@ -100,16 +101,13 @@ export default function Layout() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: 3,
+                  gap: 4,
                   cursor: 'pointer',
+                  color: active ? theme.color.primary : theme.color.slateLight,
                 }}
               >
-                <div style={{ fontSize: 21, opacity: active ? 1 : 0.4, filter: active ? 'none' : 'grayscale(1)' }}>
-                  {t.icon}
-                </div>
-                <span style={{ fontSize: 10, fontWeight: 600, color: active ? theme.color.navy : theme.color.slateLight }}>
-                  {t.label}
-                </span>
+                <Icon name={t.icon} size={23} strokeWidth={1.8} />
+                <span style={{ fontSize: 10, fontWeight: 600 }}>{t.label}</span>
               </div>
             )
           })}

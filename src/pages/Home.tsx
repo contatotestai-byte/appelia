@@ -4,7 +4,8 @@ import { useExpenses } from '@/hooks/useExpenses'
 import { useInvoices } from '@/hooks/useInvoices'
 import { useTaxes } from '@/hooks/useTaxes'
 import { theme, fmtBRL } from '@/theme'
-import { Card, Spinner } from '@/components/ui'
+import { Card, Spinner, IconTile } from '@/components/ui'
+import { Icon, type IconName } from '@/components/Icon'
 import type { Timestamp } from 'firebase/firestore'
 
 function isThisMonth(ts: Timestamp | null): boolean {
@@ -20,11 +21,11 @@ function daysUntil(ts: Timestamp | null): number | null {
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
-const shortcuts = [
-  { icon: '🧾', label: 'Registrar despesa', to: '/financeiro/despesas' },
-  { icon: '📑', label: 'Solicitar NF', to: '/financeiro/notas-fiscais' },
-  { icon: '🗓️', label: 'Confirmar agenda', to: '/admin/agenda' },
-  { icon: '📣', label: 'Gerar post', to: '/marketing' },
+const shortcuts: { icon: IconName; label: string; to: string }[] = [
+  { icon: 'receipt', label: 'Registrar despesa', to: '/financeiro/despesas' },
+  { icon: 'fileCheck', label: 'Solicitar NF', to: '/financeiro/notas-fiscais' },
+  { icon: 'calendar', label: 'Confirmar agenda', to: '/admin/agenda' },
+  { icon: 'megaphone', label: 'Gerar post', to: '/marketing' },
 ]
 
 export default function Home() {
@@ -77,7 +78,7 @@ export default function Home() {
           <div style={{ fontSize: 13, color: theme.color.slate, fontWeight: 500, textTransform: 'capitalize' }}>
             {hoje}
           </div>
-          <div style={{ fontSize: 24, fontWeight: 800, color: theme.color.navy, letterSpacing: -0.5, textTransform: 'capitalize' }}>
+          <div style={{ fontSize: 25, fontWeight: 700, color: theme.color.navy, letterSpacing: -0.6, textTransform: 'capitalize' }}>
             Olá, {nome}
           </div>
         </div>
@@ -86,18 +87,18 @@ export default function Home() {
           style={{
             width: 44,
             height: 44,
-            borderRadius: 14,
+            borderRadius: 13,
             background: '#fff',
-            boxShadow: theme.shadow.card,
+            border: `1px solid ${theme.color.border}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 19,
+            color: theme.color.slate,
             cursor: 'pointer',
             position: 'relative',
           }}
         >
-          🔔
+          <Icon name="bell" size={20} />
           {alertas.length > 0 && (
             <span
               style={{
@@ -118,9 +119,9 @@ export default function Home() {
       {/* card saldo */}
       <div
         style={{
-          background: `linear-gradient(150deg,${theme.color.navy2},${theme.color.navy})`,
-          borderRadius: 18,
-          padding: 20,
+          background: `linear-gradient(145deg,${theme.color.navy2},${theme.color.navy})`,
+          borderRadius: 20,
+          padding: 22,
           color: '#fff',
           boxShadow: theme.shadow.raised,
         }}
@@ -147,7 +148,7 @@ export default function Home() {
 
       {/* atenção hoje */}
       <div style={{ marginTop: 22 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: theme.color.navy, marginBottom: 10 }}>Atenção hoje</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: theme.color.slate, marginBottom: 11 }}>Atenção hoje</div>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 20 }}>
             <Spinner />
@@ -159,27 +160,16 @@ export default function Home() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {alertas.slice(0, 4).map((a, i) => (
-              <Card key={i} accent={a.accent} onClick={() => nav(a.to)}>
+              <Card key={i} onClick={() => nav(a.to)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 10,
-                      background: a.bg,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 16,
-                    }}
-                  >
-                    {a.icon}
-                  </div>
+                  <IconTile size={38} bg={a.bg} color={a.accent}>
+                    <Icon name="alert" size={19} />
+                  </IconTile>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13.5, fontWeight: 600, color: theme.color.navy }}>{a.titulo}</div>
-                    <div style={{ fontSize: 12, color: theme.color.slate }}>{a.sub}</div>
+                    <div style={{ fontSize: 12, color: theme.color.slate2 }}>{a.sub}</div>
                   </div>
-                  <span style={{ color: '#cbd5e1', fontSize: 18 }}>›</span>
+                  <Icon name="forward" size={18} color={theme.color.faint} strokeWidth={2} />
                 </div>
               </Card>
             ))}
@@ -189,25 +179,14 @@ export default function Home() {
 
       {/* atalhos */}
       <div style={{ marginTop: 22 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: theme.color.navy, marginBottom: 10 }}>Atalhos</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: theme.color.slate, marginBottom: 11 }}>Atalhos</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           {shortcuts.map((s) => (
             <Card key={s.label} onClick={() => nav(s.to)}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-                <div
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 11,
-                    background: '#eff6ff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 18,
-                  }}
-                >
-                  {s.icon}
-                </div>
+                <IconTile size={38}>
+                  <Icon name={s.icon} size={19} />
+                </IconTile>
                 <span style={{ fontSize: 13, fontWeight: 600, color: theme.color.navy }}>{s.label}</span>
               </div>
             </Card>

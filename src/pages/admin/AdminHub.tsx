@@ -3,7 +3,8 @@ import { useDeliveries } from '@/hooks/useDeliveries'
 import { useTimeEntries } from '@/hooks/useTimeEntries'
 import { useContracts } from '@/hooks/useContracts'
 import { theme } from '@/theme'
-import { Card, ScreenHeader } from '@/components/ui'
+import { Card, ScreenHeader, IconTile } from '@/components/ui'
+import { Icon, type IconName } from '@/components/Icon'
 import type { Timestamp } from 'firebase/firestore'
 
 function isThisWeek(ts: Timestamp | null): boolean {
@@ -39,11 +40,11 @@ export default function AdminHub() {
     return dias >= 0 && dias <= 30 && c.status !== 'renovado' && c.status !== 'encerrado'
   }).length
 
-  const cards = [
-    { icon: '🗂️', title: 'Cronograma', sub: 'Entregas', to: '/admin/cronograma' },
-    { icon: '⏱️', title: 'Horas', sub: 'Timer + relatório', to: '/admin/horas' },
-    { icon: '📄', title: 'Contratos', sub: contratosVencer ? `${contratosVencer} a vencer` : 'Gerenciar', to: '/admin/contratos', danger: contratosVencer > 0 },
-    { icon: '🗓️', title: 'Agenda', sub: '+ WhatsApp', to: '/admin/agenda' },
+  const cards: { icon: IconName; title: string; sub: string; to: string; danger?: boolean }[] = [
+    { icon: 'columns', title: 'Cronograma', sub: 'Entregas', to: '/admin/cronograma' },
+    { icon: 'clock', title: 'Horas', sub: 'Timer + relatório', to: '/admin/horas' },
+    { icon: 'file', title: 'Contratos', sub: contratosVencer ? `${contratosVencer} a vencer` : 'Gerenciar', to: '/admin/contratos', danger: contratosVencer > 0 },
+    { icon: 'calendar', title: 'Agenda', sub: '+ WhatsApp', to: '/admin/agenda' },
   ]
 
   return (
@@ -59,9 +60,9 @@ export default function AdminHub() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {cards.map((c) => (
           <Card key={c.title} onClick={() => nav(c.to)} style={{ padding: 16 }}>
-            <div style={{ fontSize: 24 }}>{c.icon}</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: theme.color.navy, marginTop: 8 }}>{c.title}</div>
-            <div style={{ fontSize: 11.5, color: c.danger ? theme.color.dangerDark : theme.color.slate }}>{c.sub}</div>
+            <IconTile size={40}><Icon name={c.icon} size={20} /></IconTile>
+            <div style={{ fontSize: 14, fontWeight: 600, color: theme.color.navy, marginTop: 11 }}>{c.title}</div>
+            <div style={{ fontSize: 11.5, color: c.danger ? theme.color.dangerDark : theme.color.slate2, marginTop: 1 }}>{c.sub}</div>
           </Card>
         ))}
       </div>

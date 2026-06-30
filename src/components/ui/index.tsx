@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { theme } from '@/theme'
+import { Icon } from '@/components/Icon'
 
 export function Card({
   children,
@@ -17,8 +18,9 @@ export function Card({
       onClick={onClick}
       style={{
         background: theme.color.white,
-        borderRadius: theme.radius.md,
+        borderRadius: theme.radius.lg,
         padding: 14,
+        border: `1px solid ${theme.color.border}`,
         boxShadow: theme.shadow.card,
         cursor: onClick ? 'pointer' : 'default',
         borderLeft: accent ? `3px solid ${accent}` : undefined,
@@ -30,24 +32,55 @@ export function Card({
   )
 }
 
+/** Tile neutro 38–40px para um ícone (estilo v2). */
+export function IconTile({
+  children,
+  size = 40,
+  bg = theme.color.tile,
+  color = theme.color.slate,
+}: {
+  children: ReactNode
+  size?: number
+  bg?: string
+  color?: string
+}) {
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: 11,
+        background: bg,
+        color,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: `0 0 ${size}px`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
 const badgeColors: Record<string, { bg: string; fg: string }> = {
-  pendente: { bg: '#fffbeb', fg: '#d97706' },
-  solicitada: { bg: '#eff6ff', fg: '#2563eb' },
-  emitida: { bg: '#ecfdf5', fg: '#059669' },
-  pago: { bg: '#ecfdf5', fg: '#059669' },
-  atrasado: { bg: '#fef2f2', fg: '#dc2626' },
-  andamento: { bg: '#eff6ff', fg: '#2563eb' },
-  entregue: { bg: '#ecfdf5', fg: '#059669' },
-  confirmado: { bg: '#ecfdf5', fg: '#059669' },
-  aguardando: { bg: '#fffbeb', fg: '#d97706' },
-  sem_resposta: { bg: '#f1f5f9', fg: '#64748b' },
-  rascunho: { bg: '#f1f5f9', fg: '#64748b' },
-  aprovado: { bg: '#eff6ff', fg: '#2563eb' },
-  publicado: { bg: '#ecfdf5', fg: '#059669' },
+  pendente: { bg: theme.color.warningBg, fg: theme.color.warningDark },
+  solicitada: { bg: theme.color.primarySoft, fg: theme.color.primary },
+  emitida: { bg: theme.color.successBg, fg: theme.color.successDark },
+  pago: { bg: theme.color.successBg, fg: theme.color.successDark },
+  atrasado: { bg: theme.color.dangerBg, fg: theme.color.dangerDark },
+  andamento: { bg: theme.color.primarySoft, fg: theme.color.primary },
+  entregue: { bg: theme.color.successBg, fg: theme.color.successDark },
+  confirmado: { bg: theme.color.successBg, fg: theme.color.successDark },
+  aguardando: { bg: theme.color.warningBg, fg: theme.color.warningDark },
+  sem_resposta: { bg: '#f2f4f7', fg: theme.color.slate2 },
+  rascunho: { bg: '#f2f4f7', fg: theme.color.slate2 },
+  aprovado: { bg: theme.color.primarySoft, fg: theme.color.primary },
+  publicado: { bg: theme.color.successBg, fg: theme.color.successDark },
 }
 
 export function Badge({ status, label }: { status: string; label?: string }) {
-  const c = badgeColors[status] ?? { bg: '#f1f5f9', fg: '#64748b' }
+  const c = badgeColors[status] ?? { bg: '#f2f4f7', fg: theme.color.slate2 }
   return (
     <span
       style={{
@@ -55,7 +88,7 @@ export function Badge({ status, label }: { status: string; label?: string }) {
         color: c.fg,
         fontSize: 11,
         fontWeight: 600,
-        padding: '4px 9px',
+        padding: '3px 10px',
         borderRadius: 20,
         textTransform: 'capitalize',
         whiteSpace: 'nowrap',
@@ -70,7 +103,7 @@ export function PrimaryButton({
   children,
   onClick,
   disabled,
-  color = theme.color.financeiro,
+  color = theme.color.primary,
   style,
   type = 'button',
 }: {
@@ -89,11 +122,11 @@ export function PrimaryButton({
       style={{
         height: 52,
         border: 'none',
-        borderRadius: theme.radius.md,
-        background: disabled ? '#cbd5e1' : color,
+        borderRadius: 13,
+        background: disabled ? '#d0d5dd' : color,
         color: '#fff',
-        fontSize: 16,
-        fontWeight: 700,
+        fontSize: 15,
+        fontWeight: 600,
         fontFamily: 'inherit',
         cursor: disabled ? 'not-allowed' : 'pointer',
         width: '100%',
@@ -108,7 +141,6 @@ export function PrimaryButton({
 export function ScreenHeader({
   title,
   onBack,
-  accent = theme.color.financeiro,
   right,
 }: {
   title: string
@@ -124,37 +156,34 @@ export function ScreenHeader({
           style={{
             width: 38,
             height: 38,
-            borderRadius: 12,
+            borderRadius: 11,
             background: '#fff',
-            boxShadow: theme.shadow.card,
+            border: `1px solid ${theme.color.border}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 18,
             cursor: 'pointer',
-            color: theme.color.navy,
+            color: theme.color.slate,
           }}
         >
-          ‹
+          <Icon name="back" size={20} strokeWidth={1.9} />
         </div>
       )}
-      <div style={{ fontSize: 22, fontWeight: 800, color: theme.color.navy, letterSpacing: -0.5 }}>
+      <div style={{ fontSize: 21, fontWeight: 700, color: theme.color.navy, letterSpacing: -0.5 }}>
         {title}
       </div>
-      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-        {right ?? <div style={{ width: 10, height: 10, borderRadius: '50%', background: accent }} />}
-      </div>
+      {right && <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>{right}</div>}
     </div>
   )
 }
 
-export function Spinner({ color = theme.color.financeiro }: { color?: string }) {
+export function Spinner({ color = theme.color.primary }: { color?: string }) {
   return (
     <div
       style={{
-        width: 26,
-        height: 26,
-        border: `3px solid ${color}33`,
+        width: 24,
+        height: 24,
+        border: `2.5px solid ${color}33`,
         borderTopColor: color,
         borderRadius: '50%',
         animation: 'elia-spin .7s linear infinite',
@@ -173,7 +202,7 @@ export function CenteredState({ children }: { children: ReactNode }) {
         justifyContent: 'center',
         gap: 12,
         padding: '48px 20px',
-        color: theme.color.slate,
+        color: theme.color.slate2,
         fontSize: 14,
         textAlign: 'center',
       }}
@@ -183,10 +212,10 @@ export function CenteredState({ children }: { children: ReactNode }) {
   )
 }
 
-export function EmptyState({ icon, text }: { icon: string; text: string }) {
+export function EmptyState({ icon, text }: { icon: ReactNode; text: string }) {
   return (
     <CenteredState>
-      <div style={{ fontSize: 38 }}>{icon}</div>
+      <div style={{ color: theme.color.faint }}>{icon}</div>
       <div>{text}</div>
     </CenteredState>
   )
@@ -195,7 +224,7 @@ export function EmptyState({ icon, text }: { icon: string; text: string }) {
 export function ErrorState({ onRetry }: { onRetry?: () => void }) {
   return (
     <CenteredState>
-      <div style={{ fontSize: 38 }}>⚠️</div>
+      <Icon name="alert" size={34} color={theme.color.warningDark} />
       <div>Não foi possível carregar os dados.</div>
       {onRetry && (
         <button
@@ -203,7 +232,7 @@ export function ErrorState({ onRetry }: { onRetry?: () => void }) {
           style={{
             marginTop: 4,
             padding: '8px 16px',
-            borderRadius: 10,
+            borderRadius: 11,
             border: `1px solid ${theme.color.border}`,
             background: '#fff',
             fontWeight: 600,
@@ -218,7 +247,7 @@ export function ErrorState({ onRetry }: { onRetry?: () => void }) {
   )
 }
 
-/** Modal simples (bottom sheet) usado em formulários. */
+/** Modal bottom sheet. */
 export function Sheet({
   open,
   onClose,
@@ -237,7 +266,7 @@ export function Sheet({
       style={{
         position: 'absolute',
         inset: 0,
-        background: 'rgba(15,23,42,.45)',
+        background: 'rgba(16,24,40,.45)',
         zIndex: 60,
         display: 'flex',
         alignItems: 'flex-end',
@@ -249,24 +278,16 @@ export function Sheet({
         style={{
           width: '100%',
           background: '#fff',
-          borderTopLeftRadius: 22,
-          borderTopRightRadius: 22,
-          padding: '20px 20px 28px',
-          maxHeight: '88%',
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          padding: '18px 20px 28px',
+          maxHeight: '90%',
           overflowY: 'auto',
           animation: 'elia-slideup .25s ease',
         }}
       >
-        <div
-          style={{
-            width: 40,
-            height: 4,
-            borderRadius: 4,
-            background: '#e2e8f0',
-            margin: '0 auto 16px',
-          }}
-        />
-        <div style={{ fontSize: 18, fontWeight: 800, color: theme.color.navy, marginBottom: 16 }}>
+        <div style={{ width: 40, height: 4, borderRadius: 4, background: '#e4e7ec', margin: '0 auto 16px' }} />
+        <div style={{ fontSize: 18, fontWeight: 700, color: theme.color.navy, marginBottom: 16, letterSpacing: -0.3 }}>
           {title}
         </div>
         {children}
@@ -275,20 +296,14 @@ export function Sheet({
   )
 }
 
-export function Field({
-  label,
-  children,
-}: {
-  label: string
-  children: ReactNode
-}) {
+export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div style={{ marginBottom: 14 }}>
       <label
         style={{
           fontSize: 12,
-          color: theme.color.slate,
-          fontWeight: 600,
+          color: theme.color.slate2,
+          fontWeight: 500,
           display: 'block',
           marginBottom: 6,
         }}
@@ -303,9 +318,9 @@ export function Field({
 export const inputStyle: CSSProperties = {
   width: '100%',
   height: 48,
-  borderRadius: theme.radius.md,
-  border: `1px solid ${theme.color.border}`,
-  background: '#fff',
+  borderRadius: 12,
+  border: `1px solid ${theme.color.borderInput}`,
+  background: '#fcfcfd',
   color: theme.color.navy,
   padding: '0 14px',
   fontSize: 15,

@@ -3,7 +3,8 @@ import { useExpenses } from '@/hooks/useExpenses'
 import { useInvoices } from '@/hooks/useInvoices'
 import { useTaxes } from '@/hooks/useTaxes'
 import { theme, fmtBRLShort } from '@/theme'
-import { Card, ScreenHeader } from '@/components/ui'
+import { Card, ScreenHeader, IconTile } from '@/components/ui'
+import { Icon, type IconName } from '@/components/Icon'
 import type { Timestamp } from 'firebase/firestore'
 
 function monthKey(d: Date) {
@@ -58,11 +59,11 @@ export default function FinanceiroHub() {
     .filter((t) => t.status !== 'pago')
     .reduce((s, t) => s + (t.valor || 0), 0)
 
-  const cards = [
-    { icon: '🧾', title: 'Despesas', sub: 'OCR de recibos', to: '/financeiro/despesas' },
-    { icon: '📑', title: 'Notas Fiscais', sub: `${(invoices.data ?? []).filter((i) => i.status !== 'emitida').length} pendente(s)`, to: '/financeiro/notas-fiscais' },
-    { icon: '🏛️', title: 'Impostos', sub: `${(taxes.data ?? []).filter((t) => t.status !== 'pago').length} em aberto`, to: '/financeiro/impostos' },
-    { icon: '📊', title: 'Receitas', sub: 'por cliente', to: '/financeiro/receitas' },
+  const cards: { icon: IconName; title: string; sub: string; to: string }[] = [
+    { icon: 'receipt', title: 'Despesas', sub: 'OCR de recibos', to: '/financeiro/despesas' },
+    { icon: 'fileCheck', title: 'Notas Fiscais', sub: `${(invoices.data ?? []).filter((i) => i.status !== 'emitida').length} pendente(s)`, to: '/financeiro/notas-fiscais' },
+    { icon: 'bank', title: 'Impostos', sub: `${(taxes.data ?? []).filter((t) => t.status !== 'pago').length} em aberto`, to: '/financeiro/impostos' },
+    { icon: 'pie', title: 'Receitas', sub: 'por cliente', to: '/financeiro/receitas' },
   ]
 
   return (
@@ -114,9 +115,9 @@ export default function FinanceiroHub() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 14 }}>
         {cards.map((c) => (
           <Card key={c.title} onClick={() => nav(c.to)} style={{ padding: 16 }}>
-            <div style={{ fontSize: 24 }}>{c.icon}</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: theme.color.navy, marginTop: 8 }}>{c.title}</div>
-            <div style={{ fontSize: 11.5, color: theme.color.slate }}>{c.sub}</div>
+            <IconTile size={40}><Icon name={c.icon} size={20} /></IconTile>
+            <div style={{ fontSize: 14, fontWeight: 600, color: theme.color.navy, marginTop: 11 }}>{c.title}</div>
+            <div style={{ fontSize: 11.5, color: theme.color.slate2, marginTop: 1 }}>{c.sub}</div>
           </Card>
         ))}
       </div>
