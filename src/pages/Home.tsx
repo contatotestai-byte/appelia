@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useExpenses } from '@/hooks/useExpenses'
@@ -36,6 +37,8 @@ export default function Home() {
   const taxes = useTaxes()
 
   const loading = expenses.isLoading || invoices.isLoading || taxes.isLoading
+  const [showSaldo, setShowSaldo] = useState(false)
+  const mask = 'R$ ••••••'
 
   const despesaMes = (expenses.data ?? [])
     .filter((e) => isThisMonth(e.data))
@@ -149,18 +152,25 @@ export default function Home() {
           <span style={{ fontSize: 13, color: theme.color.slateLight }}>
             Saldo de {new Date().toLocaleDateString('pt-BR', { month: 'long' })}
           </span>
+          <div
+            onClick={() => setShowSaldo((v) => !v)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 9, background: 'rgba(255,255,255,.08)', color: theme.color.slateLight, cursor: 'pointer' }}
+            aria-label={showSaldo ? 'Ocultar saldo' : 'Mostrar saldo'}
+          >
+            <Icon name={showSaldo ? 'eyeOff' : 'eye'} size={17} />
+          </div>
         </div>
         <div style={{ fontSize: 34, fontWeight: 800, letterSpacing: -1, margin: '6px 0 16px' }}>
-          {loading ? '…' : fmtBRL(saldo)}
+          {loading ? '…' : showSaldo ? fmtBRL(saldo) : mask}
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <div style={{ flex: 1, background: 'rgba(255,255,255,.06)', borderRadius: 12, padding: '10px 12px' }}>
             <div style={{ fontSize: 11, color: theme.color.slateLight }}>Receita</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: theme.color.success }}>{fmtBRL(receitaMes)}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: theme.color.success }}>{showSaldo ? fmtBRL(receitaMes) : mask}</div>
           </div>
           <div style={{ flex: 1, background: 'rgba(255,255,255,.06)', borderRadius: 12, padding: '10px 12px' }}>
             <div style={{ fontSize: 11, color: theme.color.slateLight }}>Despesa</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#f87171' }}>{fmtBRL(despesaMes)}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#f87171' }}>{showSaldo ? fmtBRL(despesaMes) : mask}</div>
           </div>
         </div>
       </div>

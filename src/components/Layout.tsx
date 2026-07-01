@@ -61,13 +61,13 @@ export default function Layout() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: 4,
+                  gap: 5,
                   cursor: 'pointer',
                   color: active ? theme.color.primary : theme.color.slateLight,
                 }}
               >
-                <Icon name={t.icon} size={23} strokeWidth={1.8} />
-                <span style={{ fontSize: 10, fontWeight: 600 }}>{t.label}</span>
+                <Icon name={t.icon} size={29} strokeWidth={1.9} />
+                <span style={{ fontSize: 11, fontWeight: 600 }}>{t.label}</span>
               </div>
             )
           })}
