@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Timestamp } from 'firebase/firestore'
+import { inputToTimestamp, tsToInput } from '@/lib/date'
 import {
   useContracts,
   useCreateContract,
@@ -52,8 +52,8 @@ export default function Contratos() {
   const openEdit = (c: Contract) => {
     setDraft({
       id: c.id, clientId: c.clientId ?? '', valor: String(c.valor ?? ''),
-      dataInicio: c.dataInicio ? c.dataInicio.toDate().toISOString().slice(0, 10) : '',
-      dataFim: c.dataFim ? c.dataFim.toDate().toISOString().slice(0, 10) : '',
+      dataInicio: tsToInput(c.dataInicio),
+      dataFim: tsToInput(c.dataFim),
       status: c.status, pdfUrl: c.pdfUrl, obrigacoes: (c.obrigacoes ?? []).join('\n'),
     })
     setAiText(''); setAiMsg(null); setOpen(true)
@@ -83,8 +83,8 @@ export default function Contratos() {
     const payload: Partial<Contract> = {
       clientId: draft.clientId || null,
       valor: parseFloat(draft.valor.replace(',', '.')) || 0,
-      dataInicio: draft.dataInicio ? Timestamp.fromDate(new Date(draft.dataInicio)) : null,
-      dataFim: draft.dataFim ? Timestamp.fromDate(new Date(draft.dataFim)) : null,
+      dataInicio: inputToTimestamp(draft.dataInicio),
+      dataFim: inputToTimestamp(draft.dataFim),
       status: draft.status,
       pdfUrl: draft.pdfUrl,
       obrigacoes: draft.obrigacoes.split('\n').map((s) => s.trim()).filter(Boolean),

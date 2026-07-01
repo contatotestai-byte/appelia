@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Timestamp } from 'firebase/firestore'
+import { inputToTimestamp, tsToInput, todayInput } from '@/lib/date'
 import {
   useExpenses,
   useCreateExpense,
@@ -45,7 +45,7 @@ type Draft = {
 
 const emptyDraft = (): Draft => ({
   valor: '',
-  data: new Date().toISOString().slice(0, 10),
+  data: todayInput(),
   categoria: 'transporte',
   clientId: '',
   descricao: '',
@@ -99,7 +99,7 @@ export default function Despesas() {
     setDraft({
       id: e.id,
       valor: String(e.valor ?? ''),
-      data: e.data ? e.data.toDate().toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      data: e.data ? tsToInput(e.data) : todayInput(),
       categoria: e.categoria,
       clientId: e.clientId ?? '',
       descricao: e.descricao ?? '',
@@ -149,7 +149,7 @@ export default function Despesas() {
   const save = async () => {
     const payload: Partial<Despesa> = {
       valor: parseFloat(draft.valor.replace(',', '.')) || 0,
-      data: draft.data ? Timestamp.fromDate(new Date(draft.data)) : null,
+      data: inputToTimestamp(draft.data),
       categoria: draft.categoria,
       clientId: draft.clientId || null,
       descricao: draft.descricao,

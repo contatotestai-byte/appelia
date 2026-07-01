@@ -17,6 +17,41 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* ===== Shell responsivo (mobile full-bleed, frame em telas grandes) ===== */
+.app-outer {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e4e7ec;
+}
+.app-frame {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background: #f5f6f8;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* Tablets/desktop (iPad e maiores): app centralizado com moldura */
+@media (min-width: 600px) {
+  .app-outer {
+    padding: 28px;
+  }
+  .app-frame {
+    width: 440px;
+    height: min(940px, calc(100dvh - 56px));
+    border-radius: 42px;
+    box-shadow:
+      0 0 0 10px #101828,
+      0 0 0 12px #2a3344,
+      0 30px 70px -20px rgba(16, 24, 40, 0.5);
+  }
+}
 input,
 button,
 textarea,

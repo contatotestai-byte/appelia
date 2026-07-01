@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Timestamp } from 'firebase/firestore'
+import { inputToTimestamp, tsToInput, todayInput } from '@/lib/date'
 import {
   useInvoices,
   useCreateInvoice,
@@ -34,7 +34,7 @@ type Draft = {
   pdfUrl: string | null
 }
 
-const empty = (): Draft => ({ clientId: '', valor: '', descricao: '', status: 'solicitada', data: new Date().toISOString().slice(0, 10), pdfUrl: null })
+const empty = (): Draft => ({ clientId: '', valor: '', descricao: '', status: 'solicitada', data: todayInput(), pdfUrl: null })
 
 export default function NotasFiscais() {
   const nav = useNavigate()
@@ -64,7 +64,7 @@ export default function NotasFiscais() {
       valor: String(i.valor ?? ''),
       descricao: i.descricao ?? '',
       status: i.status,
-      data: i.data ? i.data.toDate().toISOString().slice(0, 10) : (i.createdAt ? i.createdAt.toDate().toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)),
+      data: i.data ? tsToInput(i.data) : (i.createdAt ? tsToInput(i.createdAt) : todayInput()),
       pdfUrl: i.pdfUrl,
     })
     setOpen(true)
@@ -89,7 +89,7 @@ export default function NotasFiscais() {
       valor: parseFloat(draft.valor.replace(',', '.')) || 0,
       descricao: draft.descricao,
       status: draft.status,
-      data: draft.data ? Timestamp.fromDate(new Date(draft.data)) : null,
+      data: inputToTimestamp(draft.data),
       pdfUrl: draft.pdfUrl,
     }
     if (draft.id) await update.mutateAsync({ id: draft.id, data: payload })

@@ -78,23 +78,11 @@ export default function Login() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#cbd5e1',
-      }}
-    >
+    <div className="app-outer">
       <div
+        className="app-frame"
         style={{
-          width: '100%',
-          maxWidth: 420,
-          minHeight: '100dvh',
           background: 'radial-gradient(120% 80% at 50% 0%,#1d2939 0%,#101828 60%)',
-          display: 'flex',
-          flexDirection: 'column',
           justifyContent: 'space-between',
           padding: '72px 32px 46px',
         }}

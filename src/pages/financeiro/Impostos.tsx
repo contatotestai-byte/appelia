@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Timestamp } from 'firebase/firestore'
+import { inputToTimestamp, tsToInput, todayInput } from '@/lib/date'
 import { useTaxes, useCreateTax, useUpdateTax, useDeleteTax } from '@/hooks/useTaxes'
 import { callFunction } from '@/lib/firebase/functions'
 import { theme, fmtBRL } from '@/theme'
@@ -19,7 +20,7 @@ import {
 import type { Tax, TaxStatus } from '@/types'
 
 type Draft = { id?: string; tipo: string; valor: string; vencimento: string; status: TaxStatus }
-const empty = (): Draft => ({ tipo: 'DAS', valor: '', vencimento: new Date().toISOString().slice(0, 10), status: 'pendente' })
+const empty = (): Draft => ({ tipo: 'DAS', valor: '', vencimento: todayInput(), status: 'pendente' })
 
 function daysUntil(ts: Timestamp | null): number | null {
   if (!ts) return null
@@ -52,7 +53,7 @@ export default function Impostos() {
 
   const openNew = () => { setDraft(empty()); setOpen(true) }
   const openEdit = (t: Tax) => {
-    setDraft({ id: t.id, tipo: t.tipo, valor: String(t.valor ?? ''), vencimento: t.vencimento ? t.vencimento.toDate().toISOString().slice(0, 10) : '', status: t.status })
+    setDraft({ id: t.id, tipo: t.tipo, valor: String(t.valor ?? ''), vencimento: tsToInput(t.vencimento), status: t.status })
     setOpen(true)
   }
 
@@ -60,7 +61,7 @@ export default function Impostos() {
     const payload: Partial<Tax> = {
       tipo: draft.tipo,
       valor: parseFloat(draft.valor.replace(',', '.')) || 0,
-      vencimento: draft.vencimento ? Timestamp.fromDate(new Date(draft.vencimento)) : null,
+      vencimento: inputToTimestamp(draft.vencimento),
       status: draft.status,
     }
     if (draft.id) await update.mutateAsync({ id: draft.id, data: payload })

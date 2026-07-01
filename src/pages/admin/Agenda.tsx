@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Timestamp } from 'firebase/firestore'
+import type { Timestamp } from 'firebase/firestore'
+import { inputToTimestampWithTime, tsToInput, tsToTimeInput, todayInput } from '@/lib/date'
 import {
   useAppointments,
   useCreateAppointment,
@@ -14,7 +15,7 @@ import { Card, ScreenHeader, Sheet, Field, inputStyle, PrimaryButton, Spinner, E
 import type { Appointment, ConfirmacaoStatus } from '@/types'
 
 type Draft = { id?: string; clientId: string; titulo: string; data: string; hora: string; contato: string; statusConfirmacao: ConfirmacaoStatus }
-const empty = (): Draft => ({ clientId: '', titulo: '', data: new Date().toISOString().slice(0, 10), hora: '10:00', contato: '', statusConfirmacao: 'sem_resposta' })
+const empty = (): Draft => ({ clientId: '', titulo: '', data: todayInput(), hora: '10:00', contato: '', statusConfirmacao: 'sem_resposta' })
 
 const confLabel: Record<ConfirmacaoStatus, { label: string; bg: string; fg: string }> = {
   confirmado: { label: 'Confirmado', bg: '#ecfdf5', fg: '#059669' },
@@ -50,21 +51,19 @@ export default function Agenda() {
 
   const openNew = () => { setDraft(empty()); setOpen(true) }
   const openEdit = (a: Appointment) => {
-    const d = a.data?.toDate()
     setDraft({
       id: a.id, clientId: a.clientId ?? '', titulo: a.titulo,
-      data: d ? d.toISOString().slice(0, 10) : '', hora: d ? d.toTimeString().slice(0, 5) : '10:00',
+      data: tsToInput(a.data), hora: tsToTimeInput(a.data) || '10:00',
       contato: a.contato ?? '', statusConfirmacao: a.statusConfirmacao,
     })
     setOpen(true)
   }
 
   const save = async () => {
-    const dt = draft.data ? new Date(`${draft.data}T${draft.hora || '00:00'}`) : null
     const payload: Partial<Appointment> = {
       clientId: draft.clientId || null,
       titulo: draft.titulo,
-      data: dt ? Timestamp.fromDate(dt) : null,
+      data: inputToTimestampWithTime(draft.data, draft.hora),
       contato: draft.contato,
       statusConfirmacao: draft.statusConfirmacao,
       googleEventId: null,

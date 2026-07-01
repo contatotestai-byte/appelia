@@ -16,29 +16,8 @@ export default function Layout() {
   const hideChatFab = pathname.startsWith('/assistente')
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: theme.color.outer,
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          maxWidth: 420,
-          height: '100dvh',
-          maxHeight: 900,
-          background: theme.color.bg,
-          position: 'relative',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '0 30px 70px -20px rgba(16,24,40,.45)',
-        }}
-      >
+    <div className="app-outer">
+      <div className="app-frame">
         {/* área de scroll */}
         <div
           className="scroll"

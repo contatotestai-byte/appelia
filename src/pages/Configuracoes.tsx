@@ -79,18 +79,6 @@ export default function Configuracoes() {
         </button>
       </Card>
 
-      <SectionTitle>Clientes</SectionTitle>
-      <Card onClick={() => nav('/clientes')}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ fontSize: 20 }}>🤝</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: theme.color.navy }}>Gerenciar clientes</div>
-            <div style={{ fontSize: 12, color: theme.color.slate }}>Cadastre os clientes usados em todo o app</div>
-          </div>
-          <span style={{ color: '#cbd5e1', fontSize: 18 }}>›</span>
-        </div>
-      </Card>
-
       <SectionTitle>Regime tributário</SectionTitle>
       <Card>
         <select value={regime} onChange={(e) => { setRegime(e.target.value as RegimeTributario); updateProfile.mutate({ regimeTributario: e.target.value as RegimeTributario }) }} style={inputStyle}>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Timestamp } from 'firebase/firestore'
+import { inputToTimestamp, todayInput } from '@/lib/date'
 import { useTimeEntries, useCreateTimeEntry, useDeleteTimeEntry } from '@/hooks/useTimeEntries'
 import { useClients, useClientMap } from '@/hooks/useClients'
 import { theme } from '@/theme'
@@ -37,7 +38,7 @@ export default function Horas() {
   const [mClient, setMClient] = useState('')
   const [mHoras, setMHoras] = useState('')
   const [mDesc, setMDesc] = useState('')
-  const [mData, setMData] = useState(new Date().toISOString().slice(0, 10))
+  const [mData, setMData] = useState(todayInput())
 
   useEffect(() => {
     const raw = localStorage.getItem(TIMER_KEY)
@@ -78,7 +79,7 @@ export default function Horas() {
   const saveManual = async () => {
     await create.mutateAsync({
       clientId: mClient || null,
-      inicio: mData ? Timestamp.fromDate(new Date(mData)) : null,
+      inicio: inputToTimestamp(mData),
       fim: null,
       horas: parseFloat(mHoras.replace(',', '.')) || 0,
       descricao: mDesc,

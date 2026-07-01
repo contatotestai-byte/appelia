@@ -54,7 +54,7 @@ export default function Clientes() {
 
   return (
     <div style={{ padding: '4px 20px 0' }} className="fade">
-      <ScreenHeader title="Clientes" onBack={() => nav('/configuracoes')} accent={theme.color.navy} />
+      <ScreenHeader title="Clientes" onBack={() => nav('/admin')} accent={theme.color.navy} />
 
       <PrimaryButton onClick={openNew} style={{ height: 46, marginBottom: 16 }}>+ Novo cliente</PrimaryButton>
 

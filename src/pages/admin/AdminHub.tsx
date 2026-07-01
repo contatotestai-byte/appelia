@@ -45,6 +45,7 @@ export default function AdminHub() {
     { icon: 'clock', title: 'Horas', sub: 'Timer + relatório', to: '/admin/horas' },
     { icon: 'file', title: 'Contratos', sub: contratosVencer ? `${contratosVencer} a vencer` : 'Gerenciar', to: '/admin/contratos', danger: contratosVencer > 0 },
     { icon: 'calendar', title: 'Agenda', sub: '+ WhatsApp', to: '/admin/agenda' },
+    { icon: 'users', title: 'Clientes', sub: 'Cadastro manual', to: '/clientes' },
   ]
 
   return (

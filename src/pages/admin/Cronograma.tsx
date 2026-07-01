@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Timestamp } from 'firebase/firestore'
+import { inputToTimestamp, tsToInput, todayInput } from '@/lib/date'
 import {
   useDeliveries,
   useCreateDelivery,
@@ -24,7 +24,7 @@ const nextStatus: Record<DeliveryStatus, DeliveryStatus | null> = {
 }
 
 type Draft = { id?: string; titulo: string; clientId: string; prazo: string; status: DeliveryStatus; responsavel: string }
-const empty = (): Draft => ({ titulo: '', clientId: '', prazo: new Date().toISOString().slice(0, 10), status: 'pendente', responsavel: '' })
+const empty = (): Draft => ({ titulo: '', clientId: '', prazo: todayInput(), status: 'pendente', responsavel: '' })
 
 export default function Cronograma() {
   const nav = useNavigate()
@@ -40,7 +40,7 @@ export default function Cronograma() {
 
   const openNew = () => { setDraft(empty()); setOpen(true) }
   const openEdit = (d: Delivery) => {
-    setDraft({ id: d.id, titulo: d.titulo, clientId: d.clientId ?? '', prazo: d.prazo ? d.prazo.toDate().toISOString().slice(0, 10) : '', status: d.status, responsavel: d.responsavel ?? '' })
+    setDraft({ id: d.id, titulo: d.titulo, clientId: d.clientId ?? '', prazo: tsToInput(d.prazo), status: d.status, responsavel: d.responsavel ?? '' })
     setOpen(true)
   }
 
@@ -48,7 +48,7 @@ export default function Cronograma() {
     const payload: Partial<Delivery> = {
       titulo: draft.titulo,
       clientId: draft.clientId || null,
-      prazo: draft.prazo ? Timestamp.fromDate(new Date(draft.prazo)) : null,
+      prazo: inputToTimestamp(draft.prazo),
       status: draft.status,
       responsavel: draft.responsavel,
     }
