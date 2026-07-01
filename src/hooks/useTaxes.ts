@@ -6,7 +6,6 @@ import {
   createDoc,
   updateDocById,
   deleteDocById,
-  orderBy,
 } from '@/lib/firebase/firestore'
 import type { Tax } from '@/types'
 
@@ -15,7 +14,11 @@ export function useTaxes() {
   return useQuery({
     queryKey: ['taxes', user?.uid],
     enabled: !!user,
-    queryFn: () => listByOwner<Tax>(COLLECTIONS.taxes, user!.uid, [orderBy('vencimento', 'asc')]),
+    // Ordena no cliente (evita índice composto no Firestore).
+    queryFn: async () => {
+      const items = await listByOwner<Tax>(COLLECTIONS.taxes, user!.uid)
+      return items.sort((a, b) => (a.vencimento?.toMillis() ?? Infinity) - (b.vencimento?.toMillis() ?? Infinity))
+    },
   })
 }
 

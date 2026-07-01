@@ -8,7 +8,6 @@ import {
   createDoc,
   updateDocById,
   deleteDocById,
-  orderBy,
 } from '@/lib/firebase/firestore'
 import type { Despesa } from '@/types'
 
@@ -17,7 +16,11 @@ export function useExpenses() {
   return useQuery({
     queryKey: ['expenses', user?.uid],
     enabled: !!user,
-    queryFn: () => listByOwner<Despesa>(COLLECTIONS.expenses, user!.uid, [orderBy('data', 'desc')]),
+    // Ordena no cliente (evita índice composto no Firestore).
+    queryFn: async () => {
+      const items = await listByOwner<Despesa>(COLLECTIONS.expenses, user!.uid)
+      return items.sort((a, b) => (b.data?.toMillis() ?? 0) - (a.data?.toMillis() ?? 0))
+    },
   })
 }
 

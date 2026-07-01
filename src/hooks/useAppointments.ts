@@ -6,7 +6,6 @@ import {
   createDoc,
   updateDocById,
   deleteDocById,
-  orderBy,
 } from '@/lib/firebase/firestore'
 import type { Appointment } from '@/types'
 
@@ -15,8 +14,11 @@ export function useAppointments() {
   return useQuery({
     queryKey: ['appointments', user?.uid],
     enabled: !!user,
-    queryFn: () =>
-      listByOwner<Appointment>(COLLECTIONS.appointments, user!.uid, [orderBy('data', 'asc')]),
+    // Ordena no cliente (evita índice composto no Firestore).
+    queryFn: async () => {
+      const items = await listByOwner<Appointment>(COLLECTIONS.appointments, user!.uid)
+      return items.sort((a, b) => (a.data?.toMillis() ?? Infinity) - (b.data?.toMillis() ?? Infinity))
+    },
   })
 }
 

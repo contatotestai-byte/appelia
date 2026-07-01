@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from './useAuth'
-import { COLLECTIONS, listByOwner, updateDocById, orderBy } from '@/lib/firebase/firestore'
+import { COLLECTIONS, listByOwner, updateDocById } from '@/lib/firebase/firestore'
 import type { AppNotification } from '@/types'
 
 export function useNotifications() {
@@ -8,8 +8,11 @@ export function useNotifications() {
   return useQuery({
     queryKey: ['notifications', user?.uid],
     enabled: !!user,
-    queryFn: () =>
-      listByOwner<AppNotification>(COLLECTIONS.notifications, user!.uid, [orderBy('createdAt', 'desc')]),
+    // Ordena no cliente (evita índice composto no Firestore).
+    queryFn: async () => {
+      const items = await listByOwner<AppNotification>(COLLECTIONS.notifications, user!.uid)
+      return items.sort((a, b) => (b.createdAt?.toMillis() ?? 0) - (a.createdAt?.toMillis() ?? 0))
+    },
   })
 }
 
