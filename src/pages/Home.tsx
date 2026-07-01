@@ -82,37 +82,56 @@ export default function Home() {
             Olá, {nome}
           </div>
         </div>
-        <div
-          onClick={() => nav('/notificacoes')}
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 13,
-            background: '#fff',
-            border: `1px solid ${theme.color.border}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: theme.color.slate,
-            cursor: 'pointer',
-            position: 'relative',
-          }}
-        >
-          <Icon name="bell" size={20} />
-          {alertas.length > 0 && (
-            <span
-              style={{
-                position: 'absolute',
-                top: 9,
-                right: 9,
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: theme.color.danger,
-                border: '2px solid #fff',
-              }}
-            />
-          )}
+        <div style={{ display: 'flex', gap: 9 }}>
+          <div
+            onClick={() => nav('/configuracoes')}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 13,
+              background: '#fff',
+              border: `1px solid ${theme.color.border}`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: theme.color.slate,
+              cursor: 'pointer',
+            }}
+          >
+            <Icon name="settings" size={20} />
+          </div>
+          <div
+            onClick={() => nav('/notificacoes')}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 13,
+              background: '#fff',
+              border: `1px solid ${theme.color.border}`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: theme.color.slate,
+              cursor: 'pointer',
+              position: 'relative',
+            }}
+          >
+            <Icon name="bell" size={20} />
+            {alertas.length > 0 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 9,
+                  right: 9,
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: theme.color.danger,
+                  border: '2px solid #fff',
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
 
