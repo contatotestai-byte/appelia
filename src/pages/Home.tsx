@@ -42,7 +42,7 @@ export default function Home() {
     .reduce((s, e) => s + (e.valor || 0), 0)
 
   const receitaMes = (invoices.data ?? [])
-    .filter((i) => i.status === 'emitida')
+    .filter((i) => i.status === 'emitida' && isThisMonth(i.data ?? i.createdAt))
     .reduce((s, i) => s + (i.valor || 0), 0)
 
   const saldo = receitaMes - despesaMes

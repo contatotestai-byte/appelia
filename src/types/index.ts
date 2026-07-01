@@ -63,6 +63,7 @@ export interface Invoice extends BaseDoc {
   valor: number
   descricao: string
   status: InvoiceStatus
+  data: Timestamp | null
   pdfUrl: string | null
 }
 

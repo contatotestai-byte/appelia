@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Timestamp } from 'firebase/firestore'
 import {
   useInvoices,
   useCreateInvoice,
@@ -29,10 +30,11 @@ type Draft = {
   valor: string
   descricao: string
   status: InvoiceStatus
+  data: string
   pdfUrl: string | null
 }
 
-const empty = (): Draft => ({ clientId: '', valor: '', descricao: '', status: 'solicitada', pdfUrl: null })
+const empty = (): Draft => ({ clientId: '', valor: '', descricao: '', status: 'solicitada', data: new Date().toISOString().slice(0, 10), pdfUrl: null })
 
 export default function NotasFiscais() {
   const nav = useNavigate()
@@ -48,12 +50,23 @@ export default function NotasFiscais() {
   const [aiBusy, setAiBusy] = useState(false)
   const [fStatus, setFStatus] = useState('')
 
+  const refDate = (i: Invoice) => i.data?.toMillis() ?? i.createdAt?.toMillis() ?? 0
   const pendentes = (data ?? []).filter((i) => i.status !== 'emitida')
-  const filtered = (data ?? []).filter((i) => !fStatus || i.status === fStatus)
+  const filtered = (data ?? [])
+    .filter((i) => !fStatus || i.status === fStatus)
+    .sort((a, b) => refDate(b) - refDate(a))
 
   const openNew = () => { setDraft(empty()); setOpen(true) }
   const openEdit = (i: Invoice) => {
-    setDraft({ id: i.id, clientId: i.clientId ?? '', valor: String(i.valor ?? ''), descricao: i.descricao ?? '', status: i.status, pdfUrl: i.pdfUrl })
+    setDraft({
+      id: i.id,
+      clientId: i.clientId ?? '',
+      valor: String(i.valor ?? ''),
+      descricao: i.descricao ?? '',
+      status: i.status,
+      data: i.data ? i.data.toDate().toISOString().slice(0, 10) : (i.createdAt ? i.createdAt.toDate().toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)),
+      pdfUrl: i.pdfUrl,
+    })
     setOpen(true)
   }
 
@@ -76,6 +89,7 @@ export default function NotasFiscais() {
       valor: parseFloat(draft.valor.replace(',', '.')) || 0,
       descricao: draft.descricao,
       status: draft.status,
+      data: draft.data ? Timestamp.fromDate(new Date(draft.data)) : null,
       pdfUrl: draft.pdfUrl,
     }
     if (draft.id) await update.mutateAsync({ id: draft.id, data: payload })
@@ -138,7 +152,11 @@ export default function NotasFiscais() {
                     {i.clientId ? clientMap[i.clientId] ?? '—' : '—'} · {i.descricao || 'Sem descrição'}
                   </div>
                 </div>
-                <span style={{ color: '#cbd5e1', fontSize: 18 }}>›</span>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 11.5, color: theme.color.slate2, whiteSpace: 'nowrap' }}>
+                    {(i.data ?? i.createdAt)?.toDate().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: '2-digit' })}
+                  </div>
+                </div>
               </div>
             </Card>
           ))
@@ -154,9 +172,18 @@ export default function NotasFiscais() {
             ))}
           </select>
         </Field>
-        <Field label="Valor (R$)">
-          <input value={draft.valor} onChange={(e) => setDraft({ ...draft, valor: e.target.value })} inputMode="decimal" placeholder="0,00" style={inputStyle} />
-        </Field>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ flex: 1 }}>
+            <Field label="Valor (R$)">
+              <input value={draft.valor} onChange={(e) => setDraft({ ...draft, valor: e.target.value })} inputMode="decimal" placeholder="0,00" style={inputStyle} />
+            </Field>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Field label="Data (mês de referência)">
+              <input type="date" value={draft.data} onChange={(e) => setDraft({ ...draft, data: e.target.value })} style={inputStyle} />
+            </Field>
+          </div>
+        </div>
         <Field label="Descrição do serviço">
           <textarea
             value={draft.descricao}

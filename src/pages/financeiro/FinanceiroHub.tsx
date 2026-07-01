@@ -34,7 +34,7 @@ export default function FinanceiroHub() {
 
   for (const inv of invoices.data ?? []) {
     if (inv.status === 'emitida') {
-      const b = bucket(inv.createdAt)
+      const b = bucket(inv.data ?? inv.createdAt)
       if (b) b.entrada += inv.valor || 0
     }
   }

@@ -182,7 +182,8 @@ export const estimateTaxes = onCall(opts, async (req) => {
   let receita = 0
   invSnap.forEach((d) => {
     const v = d.data()
-    if (v.createdAt && v.createdAt.toMillis() >= inicioMes.toMillis()) receita += v.valor || 0
+    const ref = v.data ?? v.createdAt
+    if (ref && ref.toMillis() >= inicioMes.toMillis()) receita += v.valor || 0
   })
 
   const userSnap = await db.collection('users').doc(ownerId).get()
