@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { theme } from '@/theme'
 
 export default function Login() {
-  const { user, configured, signInEmail, signInGoogle, resetPassword } = useAuth()
+  const { user, configured, signInEmail, resetPassword } = useAuth()
   const nav = useNavigate()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -30,23 +30,6 @@ export default function Login() {
       nav('/', { replace: true })
     } catch {
       setError('E-mail ou senha inválidos.')
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  const google = async () => {
-    setError(null)
-    if (!configured) {
-      setError('Firebase ainda não configurado.')
-      return
-    }
-    setBusy(true)
-    try {
-      await signInGoogle()
-      nav('/', { replace: true })
-    } catch {
-      setError('Não foi possível entrar com o Google.')
     } finally {
       setBusy(false)
     }
@@ -78,28 +61,20 @@ export default function Login() {
   }
 
   return (
-    <div className="app-outer">
-      <div
-        className="app-frame"
-        style={{
-          background: 'radial-gradient(120% 80% at 50% 0%,#1d2939 0%,#101828 60%)',
-          justifyContent: 'space-between',
-          padding: '72px 32px 46px',
-        }}
-      >
-        <div />
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <img
-            src="/brand/wordmark_white.png"
-            alt="ELIÁ"
-            style={{ width: 188, height: 'auto', marginBottom: 14 }}
-          />
-          <div style={{ fontSize: 11, letterSpacing: 4, color: '#94a3b8', fontWeight: 500 }}>
-            CONSULTORIA DE PESSOAS
-          </div>
+    <div className="login-shell">
+      <div />
+      <div className="login-col" style={{ alignItems: 'center', textAlign: 'center' }}>
+        <img
+          src="/brand/wordmark_white.png"
+          alt="ELIÁ"
+          style={{ width: 188, height: 'auto', marginBottom: 14 }}
+        />
+        <div style={{ fontSize: 11, letterSpacing: 4, color: '#94a3b8', fontWeight: 500 }}>
+          CONSULTORIA DE PESSOAS
         </div>
+      </div>
 
-        <form onSubmit={handle} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <form onSubmit={handle} className="login-col" style={{ gap: 14 }}>
           <div>
             <label style={{ fontSize: 12, color: '#94a3b8', fontWeight: 500, display: 'block', marginBottom: 6 }}>
               E-mail
@@ -153,42 +128,7 @@ export default function Login() {
           >
             Esqueci minha senha
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '7px 0' }}>
-            <div style={{ flex: 1, height: 1, background: '#344054' }} />
-            <div style={{ fontSize: 11, color: '#667085' }}>ou</div>
-            <div style={{ flex: 1, height: 1, background: '#344054' }} />
-          </div>
-
-          <button
-            type="button"
-            onClick={google}
-            disabled={busy}
-            style={{
-              height: 50,
-              border: '1px solid #344054',
-              borderRadius: 13,
-              background: 'transparent',
-              color: '#e4e7ec',
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 10,
-            }}
-          >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path d="M21.6 12.2c0-.6-.05-1.2-.15-1.7H12v3.4h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.2z" fill="#4285F4" />
-              <path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853" />
-              <path d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z" fill="#FBBC05" />
-              <path d="M12 6.1c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.8 9.4 6.1 12 6.1z" fill="#EA4335" />
-            </svg>
-            Entrar com Google
-          </button>
         </form>
       </div>
-    </div>
   )
 }

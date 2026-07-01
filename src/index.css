@@ -18,15 +18,7 @@ body {
   min-height: 100vh;
 }
 
-/* ===== Shell responsivo (mobile full-bleed, frame em telas grandes) ===== */
-.app-outer {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e4e7ec;
-}
+/* ===== Shell full-bleed (sem moldura); conteúdo centralizado numa coluna ===== */
 .app-frame {
   position: relative;
   width: 100%;
@@ -37,20 +29,61 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
-/* Tablets/desktop (iPad e maiores): app centralizado com moldura */
-@media (min-width: 600px) {
-  .app-outer {
-    padding: 28px;
-  }
-  .app-frame {
-    width: 440px;
-    height: min(940px, calc(100dvh - 56px));
-    border-radius: 42px;
-    box-shadow:
-      0 0 0 10px #101828,
-      0 0 0 12px #2a3344,
-      0 30px 70px -20px rgba(16, 24, 40, 0.5);
-  }
+.app-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 14px 0 100px;
+}
+.app-content {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.app-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid #eceef2;
+  display: flex;
+  justify-content: center;
+  z-index: 35;
+}
+.app-nav-inner {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  align-items: flex-start;
+  padding: 11px 6px 0;
+}
+.app-fab {
+  position: absolute;
+  bottom: 94px;
+  right: max(18px, calc(50% - 292px));
+  z-index: 40;
+}
+/* Login full-bleed com coluna central */
+.login-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 72px 32px 46px;
+  background: radial-gradient(120% 80% at 50% 0%, #1d2939 0%, #101828 60%);
+}
+.login-col {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
 }
 input,
 button,

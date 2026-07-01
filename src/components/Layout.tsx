@@ -16,59 +16,40 @@ export default function Layout() {
   const hideChatFab = pathname.startsWith('/assistente')
 
   return (
-    <div className="app-outer">
-      <div className="app-frame">
-        {/* área de scroll */}
-        <div
-          className="scroll"
-          style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '14px 0 100px' }}
-        >
+    <div className="app-frame">
+      {/* área de scroll com conteúdo centralizado */}
+      <div className="app-scroll scroll">
+        <div className="app-content">
           <Outlet />
         </div>
+      </div>
 
-        {/* botão flutuante IA */}
-        {!hideChatFab && (
-          <button
-            onClick={() => nav('/assistente')}
-            style={{
-              position: 'absolute',
-              right: 18,
-              bottom: 94,
-              width: 54,
-              height: 54,
-              borderRadius: 17,
-              border: 'none',
-              background: `linear-gradient(145deg, ${theme.color.primary}, ${theme.color.primaryDark})`,
-              color: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: theme.shadow.indigo,
-              cursor: 'pointer',
-              zIndex: 40,
-            }}
-          >
-            <Icon name="sparkle" size={24} strokeWidth={1.8} />
-          </button>
-        )}
-
-        {/* bottom nav */}
-        <div
+      {/* botão flutuante IA */}
+      {!hideChatFab && (
+        <button
+          className="app-fab"
+          onClick={() => nav('/assistente')}
           style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 80,
-            background: 'rgba(255,255,255,.94)',
-            backdropFilter: 'blur(14px)',
-            borderTop: `1px solid ${theme.color.border}`,
+            width: 54,
+            height: 54,
+            borderRadius: 17,
+            border: 'none',
+            background: `linear-gradient(145deg, ${theme.color.primary}, ${theme.color.primaryDark})`,
+            color: '#fff',
             display: 'flex',
-            alignItems: 'flex-start',
-            padding: '11px 6px 0',
-            zIndex: 35,
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: theme.shadow.indigo,
+            cursor: 'pointer',
           }}
         >
+          <Icon name="sparkle" size={24} strokeWidth={1.8} />
+        </button>
+      )}
+
+      {/* bottom nav */}
+      <div className="app-nav">
+        <div className="app-nav-inner">
           {tabs.map((t) => {
             const active = t.match(pathname)
             return (
